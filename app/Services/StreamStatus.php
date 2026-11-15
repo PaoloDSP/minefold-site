@@ -61,6 +61,8 @@ class StreamStatus
             $reason = 'forced';
         }
 
+        $now = $live['title'] ?? Setting::get('now_title');
+
         return [
             'mode' => $mode,
             'source' => $source,
@@ -75,10 +77,26 @@ class StreamStatus
                 'url' => $fallbackUrl,
                 'label' => Setting::get('fallback_label') ?: 'Minefold TV',
             ],
-            'now' => $live['title'] ?? Setting::get('now_title'),
+            'now' => $now,
+            'content' => $this->contentState($now),
             'next' => ['title' => Setting::get('next_title'), 'time' => Setting::get('next_time')],
             'checked_at' => now()->toIso8601String(),
         ];
+    }
+
+    /**
+     * Direct réel ou rediffusion, déduit du titre du programme (le vrai direct est marqué dans le titre Twitch).
+     *
+     * @return array{state: string, label: string}
+     */
+    protected function contentState(?string $title): array
+    {
+        $t = mb_strtolower((string) $title);
+        $isLive = (str_contains($t, 'direct') || str_contains($t, 'live')) && ! str_contains($t, 'rediff');
+
+        return $isLive
+            ? ['state' => 'live', 'label' => 'EN DIRECT']
+            : ['state' => 'rerun', 'label' => 'REDIFFUSION'];
     }
 
     protected function autoSource(string $twitchState, bool $hasChannel, bool $hasFallback): string

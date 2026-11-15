@@ -127,11 +127,12 @@
   }
 
   function updateTexts(source) {
-    var live = status.twitch && status.twitch.state === 'live';
-    if (liveTag) liveTag.hidden = !(source === 'twitch' ? live : true);
+    // L'étiquette reflète le contenu (direct réel ou rediffusion), pas la source du flux.
+    var content = status.content || { state: 'rerun', label: 'REDIFFUSION' };
     if (liveTag) {
-      liveTag.textContent = source === 'twitch' ? 'EN DIRECT' : 'À L’ANTENNE';
-      liveTag.className = 'tag ' + (source === 'twitch' ? 'tag-live' : 'tag-brand');
+      liveTag.hidden = false;
+      liveTag.textContent = content.label;
+      liveTag.className = 'tag ' + (content.state === 'live' ? 'tag-live' : 'tag-rerun');
     }
     if (liveTitle) liveTitle.textContent = status.now || '';
     if (badge) {
