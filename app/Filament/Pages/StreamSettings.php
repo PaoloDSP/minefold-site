@@ -8,6 +8,7 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
@@ -26,6 +27,7 @@ class StreamSettings extends Page
         'twitch_channel', 'player_mode', 'fallback_hls_url', 'fallback_label',
         'now_title', 'next_title', 'next_time',
         'membership_url', 'donation_url', 'shop_url', 'discord_url',
+        'xmas_theme',
     ];
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSignal;
@@ -40,7 +42,7 @@ class StreamSettings extends Page
 
     public function mount(): void
     {
-        $this->form->fill(collect(self::KEYS)->mapWithKeys(fn ($k) => [$k => Setting::get($k)])->all() + ['player_mode' => Setting::get('player_mode', 'auto')]);
+        $this->form->fill(collect(self::KEYS)->mapWithKeys(fn ($k) => [$k => Setting::get($k)])->all() + ['player_mode' => Setting::get('player_mode', 'auto'), 'xmas_theme' => (bool) Setting::get('xmas_theme')]);
     }
 
     public function form(Schema $schema): Schema
@@ -62,6 +64,10 @@ class StreamSettings extends Page
                 TextInput::make('now_title')->label('Émission en cours'),
                 TextInput::make('next_title')->label('Émission suivante'),
                 TextInput::make('next_time')->label('Heure de la suivante')->placeholder('21:00'),
+            ]),
+            Section::make('Habillage')->schema([
+                Toggle::make('xmas_theme')->label('Thème de Noël')
+                    ->helperText('Ajoute la neige et un bandeau festif sur le site public.'),
             ]),
             Section::make('Liens de l’association')->columns(2)->schema([
                 TextInput::make('membership_url')->label('Adhésion (HelloAsso)')->url(),

@@ -10,8 +10,12 @@
     <link rel="stylesheet" href="{{ asset('css/site.css') }}?v={{ filemtime(public_path('css/site.css')) }}">
     @stack('head')
 </head>
-<body>
+<body @if(\App\Models\Setting::get('xmas_theme')) data-season="noel" @endif>
 <a class="skip" href="#contenu">Aller au contenu</a>
+@if(\App\Models\Setting::get('xmas_theme'))
+    <div class="snow" aria-hidden="true"></div>
+    <script src="{{ asset('js/snow.js') }}" defer></script>
+@endif
 <header class="site-header">
     <div class="bar"></div>
     <div class="wrap">

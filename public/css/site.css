@@ -46,6 +46,49 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; }
 .skip:focus { left: 8px; }
 :focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 
+/* Thème de Noël — charte habillage WebTV (MF_Nuit_Sapin / Rouge / Vert / Or / Blanc) */
+body[data-season="noel"] {
+  --bg: #0E1B14;
+  --surface: #13261B;
+  --surface-2: #1B3325;
+  --line: #22402F;
+  --line-2: #2E5540;
+  --brand: #C8102E;
+  --brand-strong: #146B3A;
+  --brand-hover: #1A7D45;
+  --link: #E8B84A;
+  --link-hover: #F2CE75;
+  --navy: #12291D;
+  --navy-2: #0E1B14;
+  --navy-line: #22402F;
+  --navy-text: #EAF3EC;
+  --navy-muted: #AEC9B6;
+  --live: #C8102E;
+  --live-dot: #C8102E;
+}
+body[data-season="noel"] .site-header .bar {
+  height: 16px;
+  background-color: #0E1B14;
+  background-image:
+    radial-gradient(circle at 12px 11px, #C8102E 3px, transparent 4px),
+    radial-gradient(circle at 36px 11px, #E8B84A 3px, transparent 4px),
+    radial-gradient(circle at 60px 11px, #146B3A 3px, transparent 4px),
+    radial-gradient(circle at 84px 11px, #FFFFFF 3px, transparent 4px);
+  background-repeat: repeat-x;
+  background-size: 96px 16px;
+  border-bottom: 1px solid #22402F;
+}
+body[data-season="noel"] .logo { position: relative; display: inline-flex; }
+body[data-season="noel"] .logo::after {
+  content: ""; position: absolute; top: -11px; left: -8px; width: 28px; height: 22px; z-index: 2;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 48'%3E%3Cpath d='M2 40 Q4 8 54 12 Q40 24 10 40 Z' fill='%23C8102E'/%3E%3Crect x='0' y='37' width='24' height='9' rx='4' fill='%23fff'/%3E%3Ccircle cx='54' cy='12' r='6' fill='%23fff'/%3E%3C/svg%3E") no-repeat center/contain;
+  transform: rotate(-14deg); pointer-events: none;
+}
+.snow { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 60; }
+.snow i { position: absolute; top: -16px; color: #FFFFFF; font-style: normal; text-shadow: 0 0 4px rgba(255,255,255,.4); will-change: transform; animation: snowfall linear infinite; }
+@keyframes snowfall { from { transform: translateY(-16px) rotate(0); } to { transform: translateY(106vh) rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .snow { display: none; } }
+
 /* Header */
 .site-header { background: var(--surface); border-bottom: 1px solid var(--line); }
 .site-header .bar { height: 3px; background: var(--brand); }
