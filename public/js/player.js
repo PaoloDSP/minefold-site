@@ -46,7 +46,7 @@
 
   function clearScreen() {
     if (hls) { hls.destroy(); hls = null; }
-    Array.prototype.forEach.call(screen.querySelectorAll('iframe, video, .placeholder'), function (el) { el.remove(); });
+    Array.prototype.forEach.call(screen.querySelectorAll('iframe, video, .placeholder, .vctrl'), function (el) { el.remove(); });
   }
 
   function placeholder(text) {
@@ -72,16 +72,102 @@
     screen.appendChild(iframe);
   }
 
+  function goLive(video) {
+    var target = null;
+    if (hls && hls.liveSyncPosition != null) {
+      target = hls.liveSyncPosition;
+    } else if (video.seekable && video.seekable.length) {
+      target = video.seekable.end(video.seekable.length - 1);
+    }
+    if (target != null) {
+      try { video.currentTime = target; } catch (e) { /* position indisponible */ }
+    }
+    if (video.paused) {
+      var p = video.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+  }
+
+  // Barre de contrôle minimale pour le flux de secours : pas de rembobinage,
+  // juste lecture/pause, volume, « direct » et plein écran.
+  function buildControls(video) {
+    var bar = document.createElement('div');
+    bar.className = 'vctrl';
+
+    function button(label, svg, onClick) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', label);
+      b.innerHTML = svg;
+      b.addEventListener('click', onClick);
+      return b;
+    }
+
+    var icoPlay = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
+    var icoPause = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>';
+    var icoVol = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>';
+    var icoMute = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
+    var icoFull = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+
+    var playBtn = button('Lecture / pause', icoPause, function () {
+      if (video.paused) { video.play(); } else { video.pause(); }
+    });
+    video.addEventListener('play', function () { playBtn.innerHTML = icoPause; });
+    video.addEventListener('pause', function () { playBtn.innerHTML = icoPlay; });
+
+    var muteBtn = button('Couper / activer le son', icoVol, function () {
+      video.muted = !video.muted;
+    });
+
+    var vol = document.createElement('input');
+    vol.type = 'range';
+    vol.min = 0; vol.max = 1; vol.step = 0.05; vol.value = video.muted ? 0 : video.volume;
+    vol.className = 'vvol';
+    vol.setAttribute('aria-label', 'Volume');
+    vol.addEventListener('input', function () {
+      video.volume = parseFloat(vol.value);
+      video.muted = parseFloat(vol.value) === 0;
+    });
+    video.addEventListener('volumechange', function () {
+      muteBtn.innerHTML = video.muted || video.volume === 0 ? icoMute : icoVol;
+      vol.value = video.muted ? 0 : video.volume;
+    });
+
+    var liveBtn = document.createElement('button');
+    liveBtn.type = 'button';
+    liveBtn.className = 'vlive';
+    liveBtn.innerHTML = '<span class="vdot"></span>DIRECT';
+    liveBtn.setAttribute('aria-label', 'Revenir au direct');
+    liveBtn.addEventListener('click', function () { goLive(video); });
+
+    var fullBtn = button('Plein écran', icoFull, function () {
+      var el = screen;
+      if (document.fullscreenElement) { document.exitFullscreen(); }
+      else if (el.requestFullscreen) { el.requestFullscreen(); }
+    });
+
+    var spacer = document.createElement('span');
+    spacer.className = 'vspace';
+
+    bar.appendChild(playBtn);
+    bar.appendChild(muteBtn);
+    bar.appendChild(vol);
+    bar.appendChild(spacer);
+    bar.appendChild(liveBtn);
+    bar.appendChild(fullBtn);
+    screen.appendChild(bar);
+  }
+
   function showFallback() {
     var url = status.fallback && status.fallback.url;
     if (!url) { placeholder('Le flux de secours n’est pas configuré.'); return; }
     var video = document.createElement('video');
-    video.controls = true;
     video.autoplay = true;
     video.muted = true;
     video.playsInline = true;
     video.setAttribute('aria-label', 'Lecteur ' + (status.fallback.label || 'Minefold TV'));
     screen.appendChild(video);
+    buildControls(video);
 
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = url;

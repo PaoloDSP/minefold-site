@@ -94,6 +94,13 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; }
 .screen .placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; color: var(--muted); text-align: center; padding: 24px; }
 .screen .placeholder img { width: 40%; max-width: 420px; opacity: .25; }
 .screen .badge { position: absolute; top: 14px; left: 14px; background: rgba(0,0,0,.65); color: #fff; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 4px; pointer-events: none; z-index: 2; }
+.vctrl { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,0)); }
+.vctrl button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: transparent; border: 0; color: #fff; cursor: pointer; padding: 6px; border-radius: 6px; min-height: 36px; }
+.vctrl button:hover { background: rgba(255,255,255,.15); }
+.vctrl .vspace { flex: 1; }
+.vctrl .vvol { width: 90px; accent-color: var(--brand); cursor: pointer; }
+.vctrl .vlive { font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 10px; }
+.vctrl .vdot { width: 8px; height: 8px; border-radius: 50%; background: var(--live-dot); display: inline-block; }
 .chat { flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; min-height: 380px; overflow: hidden; }
 .chat-head { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
 .chat-head strong { font-family: var(--display); text-transform: uppercase; letter-spacing: .04em; font-size: 14px; }
