@@ -43,4 +43,18 @@ class HelloAssoSyncTest extends TestCase
         $this->artisan('helloasso:sync')->assertSuccessful();
         Http::assertNothingSent();
     }
+
+    public function test_tiers_command_lists_form_tiers(): void
+    {
+        config(['services.helloasso.client_id' => 'id', 'services.helloasso.client_secret' => 's', 'services.helloasso.organization' => 'minefold']);
+        Event::factory()->create(['helloasso_form_slug' => 'geek-area-party']);
+        Http::fake([
+            'api.helloasso.com/oauth2/token' => Http::response(['access_token' => 'tok']),
+            'api.helloasso.com/v5/*' => Http::response(['unGroupedTiers' => [['id' => 111, 'label' => 'Joueur libre', 'entriesTaken' => 3, 'maxEntries' => 50, 'price' => 1500]]]),
+        ]);
+
+        $this->artisan('helloasso:tiers')
+            ->expectsOutputToContain('Joueur libre')
+            ->assertSuccessful();
+    }
 }
