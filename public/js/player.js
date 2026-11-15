@@ -89,7 +89,8 @@
       hls = new window.Hls({
         liveDurationInfinity: true,
         liveSyncDurationCount: 3,
-        backBufferLength: 30,
+        liveMaxLatencyDurationCount: 10,
+        backBufferLength: 10,
       });
       hls.loadSource(url);
       hls.attachMedia(video);
