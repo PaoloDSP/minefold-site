@@ -92,6 +92,14 @@ class StreamStatusTest extends TestCase
         $this->assertSame('rerun', app(StreamStatus::class)->resolve()['content']['state']);
     }
 
+    public function test_manual_live_toggle_forces_live(): void
+    {
+        $this->fakeTwitch([['type' => 'live', 'title' => 'Rediffusions - Minefold.fr']]);
+        Setting::put(['live_now' => '1']);
+
+        $this->assertSame('live', app(StreamStatus::class)->resolve()['content']['state']);
+    }
+
     public function test_status_endpoint(): void
     {
         $this->fakeTwitch([]);

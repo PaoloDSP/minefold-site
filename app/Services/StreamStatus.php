@@ -78,7 +78,9 @@ class StreamStatus
                 'label' => Setting::get('fallback_label') ?: 'Minefold TV',
             ],
             'now' => $now,
-            'content' => $this->contentState($now),
+            'content' => Setting::get('live_now')
+                ? ['state' => 'live', 'label' => 'EN DIRECT']
+                : $this->contentState($now),
             'next' => ['title' => Setting::get('next_title'), 'time' => Setting::get('next_time')],
             'checked_at' => now()->toIso8601String(),
         ];
