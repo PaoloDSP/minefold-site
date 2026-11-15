@@ -86,9 +86,19 @@
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = url;
     } else if (window.Hls && window.Hls.isSupported()) {
-      hls = new window.Hls({ liveDurationInfinity: true });
+      hls = new window.Hls({
+        liveDurationInfinity: true,
+        liveSyncDurationCount: 3,
+        backBufferLength: 30,
+      });
       hls.loadSource(url);
       hls.attachMedia(video);
+      // Démarrer au plus près du direct plutôt qu'au début de la fenêtre HLS.
+      hls.on(window.Hls.Events.MANIFEST_PARSED, function () {
+        if (hls && hls.liveSyncPosition != null) {
+          try { video.currentTime = hls.liveSyncPosition; } catch (e) { /* position indisponible */ }
+        }
+      });
       hls.on(window.Hls.Events.ERROR, function (event, data) {
         if (!data.fatal) return;
         if (data.type === window.Hls.ErrorTypes.NETWORK_ERROR) {
