@@ -17,6 +17,10 @@ Laravel 13 · Filament 5 (back-office sur `/admin`) · PHP 8.3+ (8.5 en producti
 
 ## Installation sur la VM (nginx + PHP-FPM)
 
+**Méthode rapide** (VM Minefold) : `curl -fsSL https://raw.githubusercontent.com/PaoloDSP/minefold-site/main/deploy/install-vps.sh -o ~/install-minefold.sh && sudo bash ~/install-minefold.sh` — crée la base MariaDB, installe le site dans `/var/www/minefold-site`, bascule minefold.fr (après confirmation) en gardant une copie de l'ancienne config nginx, puis crée le compte admin.
+
+Méthode manuelle :
+
 Prérequis : PHP 8.5 avec `php8.5-fpm php8.5-sqlite3 php8.5-mbstring php8.5-xml php8.5-curl php8.5-intl php8.5-gd php8.5-zip`, Composer, git.
 
 ```bash
