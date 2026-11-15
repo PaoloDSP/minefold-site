@@ -134,7 +134,11 @@
       liveTag.className = 'tag ' + (source === 'twitch' ? 'tag-live' : 'tag-brand');
     }
     if (liveTitle) liveTitle.textContent = status.now || '';
-    if (badge) badge.textContent = source === 'twitch' ? 'Diffusé via Twitch' : 'Flux Minefold · ' + ((status.fallback && status.fallback.label) || 'Minefold TV');
+    if (badge) {
+      // Le lecteur Twitch affiche déjà ses propres infos en haut à gauche.
+      badge.hidden = source === 'twitch';
+      badge.textContent = 'Flux Minefold · ' + ((status.fallback && status.fallback.label) || 'Minefold TV');
+    }
     if (nowEl) nowEl.textContent = status.now || 'Programme en continu';
     if (nextEl) {
       var next = status.next || {};
