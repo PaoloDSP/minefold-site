@@ -8,7 +8,6 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
@@ -25,7 +24,7 @@ class StreamSettings extends Page
 {
     public const KEYS = [
         'twitch_channel', 'player_mode', 'fallback_hls_url', 'fallback_label',
-        'live_now', 'now_title', 'next_title', 'next_time',
+        'now_title', 'next_title', 'next_time',
         'membership_url', 'donation_url', 'shop_url', 'discord_url',
     ];
 
@@ -41,10 +40,7 @@ class StreamSettings extends Page
 
     public function mount(): void
     {
-        $this->form->fill(
-            collect(self::KEYS)->mapWithKeys(fn ($k) => [$k => Setting::get($k)])->all()
-            + ['player_mode' => Setting::get('player_mode', 'auto'), 'live_now' => (bool) Setting::get('live_now')]
-        );
+        $this->form->fill(collect(self::KEYS)->mapWithKeys(fn ($k) => [$k => Setting::get($k)])->all() + ['player_mode' => Setting::get('player_mode', 'auto')]);
     }
 
     public function form(Schema $schema): Schema
@@ -62,11 +58,8 @@ class StreamSettings extends Page
                     ->helperText('Sortie HLS de ffplayout, servie en HTTPS.'),
                 TextInput::make('fallback_label')->label('Nom affiché du flux de secours')->placeholder('Minefold TV'),
             ]),
-            Section::make('À l’antenne')->description('Texte affiché sous le lecteur, et étiquette direct / rediffusion.')->columns(3)->schema([
-                Toggle::make('live_now')->label('Nous sommes en direct maintenant')
-                    ->helperText('Affiche l’étiquette « EN DIRECT ». À décocher à la fin du direct. (Sera automatique une fois ffplayout relié.)')
-                    ->columnSpanFull(),
-                TextInput::make('now_title')->label('Émission en cours (hors direct)'),
+            Section::make('À l’antenne')->description('Texte affiché sous le lecteur.')->columns(3)->schema([
+                TextInput::make('now_title')->label('Émission en cours'),
                 TextInput::make('next_title')->label('Émission suivante'),
                 TextInput::make('next_time')->label('Heure de la suivante')->placeholder('21:00'),
             ]),

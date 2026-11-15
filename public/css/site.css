@@ -73,7 +73,6 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
 .tag { font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: .08em; padding: 4px 10px; border-radius: 4px; color: #fff; display: inline-block; }
 .tag-live { background: var(--live); }
-.tag-rerun { background: var(--surface-2); color: var(--text-2); }
 .tag-brand { background: var(--brand-strong); }
 .tag-navy { background: var(--navy-line); }
 .grid-auto { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }

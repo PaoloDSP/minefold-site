@@ -9,7 +9,7 @@
     data-fallback-chat="Le chat Twitch revient dès que le direct Twitch reprend. En attendant, rejoignez-nous sur nos réseaux.">
     <div class="live-head">
         <div class="title">
-            <span class="tag {{ $status['content']['state'] === 'live' ? 'tag-live' : 'tag-rerun' }}" data-live-tag>{{ $status['content']['label'] }}</span>
+            <span class="tag tag-brand">À L’ANTENNE</span>
             <h1>Minefold TV</h1>
             <span class="muted" data-live-title>{{ $status['now'] }}</span>
         </div>

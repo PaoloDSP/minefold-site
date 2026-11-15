@@ -127,13 +127,6 @@
   }
 
   function updateTexts(source) {
-    // L'étiquette reflète le contenu (direct réel ou rediffusion), pas la source du flux.
-    var content = status.content || { state: 'rerun', label: 'REDIFFUSION' };
-    if (liveTag) {
-      liveTag.hidden = false;
-      liveTag.textContent = content.label;
-      liveTag.className = 'tag ' + (content.state === 'live' ? 'tag-live' : 'tag-rerun');
-    }
     if (liveTitle) liveTitle.textContent = status.now || '';
     if (badge) {
       // Le lecteur Twitch affiche déjà ses propres infos en haut à gauche.
