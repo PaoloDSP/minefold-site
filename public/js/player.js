@@ -46,7 +46,7 @@
 
   function clearScreen() {
     if (hls) { hls.destroy(); hls = null; }
-    Array.prototype.forEach.call(screen.querySelectorAll('iframe, video, .placeholder, .vctrl'), function (el) { el.remove(); });
+    Array.prototype.forEach.call(screen.querySelectorAll('iframe, video, .placeholder, .vctrl, .vsound'), function (el) { el.remove(); });
   }
 
   function placeholder(text) {
@@ -115,23 +115,41 @@
     video.addEventListener('play', function () { playBtn.innerHTML = icoPause; });
     video.addEventListener('pause', function () { playBtn.innerHTML = icoPlay; });
 
-    var muteBtn = button('Couper / activer le son', icoVol, function () {
-      video.muted = !video.muted;
+    function unmute() {
+      if (video.volume === 0) { video.volume = 0.8; }
+      video.muted = false;
+    }
+
+    var muteBtn = button('Couper / activer le son', icoMute, function () {
+      if (video.muted) { unmute(); } else { video.muted = true; }
     });
 
     var vol = document.createElement('input');
     vol.type = 'range';
-    vol.min = 0; vol.max = 1; vol.step = 0.05; vol.value = video.muted ? 0 : video.volume;
+    vol.min = 0; vol.max = 1; vol.step = 0.05; vol.value = video.volume;
     vol.className = 'vvol';
     vol.setAttribute('aria-label', 'Volume');
     vol.addEventListener('input', function () {
       video.volume = parseFloat(vol.value);
-      video.muted = parseFloat(vol.value) === 0;
+      video.muted = video.volume === 0;
     });
-    video.addEventListener('volumechange', function () {
-      muteBtn.innerHTML = video.muted || video.volume === 0 ? icoMute : icoVol;
+
+    // Bouton bien visible tant que le son est coupé (lecture auto = muette).
+    var soundBtn = document.createElement('button');
+    soundBtn.type = 'button';
+    soundBtn.className = 'vsound';
+    soundBtn.innerHTML = icoMute + '<span>Activer le son</span>';
+    soundBtn.addEventListener('click', unmute);
+    screen.appendChild(soundBtn);
+
+    function syncSound() {
+      var silent = video.muted || video.volume === 0;
+      muteBtn.innerHTML = silent ? icoMute : icoVol;
       vol.value = video.muted ? 0 : video.volume;
-    });
+      soundBtn.hidden = !silent;
+    }
+    video.addEventListener('volumechange', syncSound);
+    syncSound();
 
     var liveBtn = document.createElement('button');
     liveBtn.type = 'button';
@@ -164,6 +182,7 @@
     var video = document.createElement('video');
     video.autoplay = true;
     video.muted = true;
+    video.volume = 0.8;
     video.playsInline = true;
     video.setAttribute('aria-label', 'Lecteur ' + (status.fallback.label || 'Minefold TV'));
     screen.appendChild(video);

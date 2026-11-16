@@ -294,3 +294,7 @@ body[data-season="noel"] .logo::after {
   .main-nav { gap: 4px 18px; font-size: 14px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Bouton « Activer le son » du flux de secours */
+.vsound { position: absolute; top: 14px; right: 14px; z-index: 3; display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,.72); color: #fff; border: 1px solid rgba(255,255,255,.25); border-radius: 8px; padding: 10px 14px; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; min-height: 44px; }
+.vsound:hover { background: rgba(0,0,0,.88); }
